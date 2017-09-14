@@ -1,5 +1,6 @@
 package cisco.reactx.blogs.rest;
 
+import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,8 +13,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import cisco.reactx.blogs.api.Blog;
 import cisco.reactx.blogs.api.BlogException;
@@ -42,11 +45,15 @@ public class BlogsController {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	@JwtTokenExpected
-	public Response create(Blog blog) {
+	public Response create(Blog blog,@Context UriInfo uriInfo) {
 		try {
 			blogsService.create(blog);
-			return Response.status(Response.Status.CREATED).build();
+			String newId = String.valueOf(blog.getBlogId());
+			URI uri = uriInfo.getAbsolutePathBuilder().path(newId).build();
+			return Response.created(uri).entity(blog).build();
+			
 		} catch (InvalidDataException ide) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		} catch (DuplicateDataException dde) {
@@ -109,5 +116,17 @@ public class BlogsController {
         }
         return Response.status(Response.Status.NO_CONTENT).build();
     }
+
+	@GET
+	@Path("/user/{userName}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response readUser(@PathParam("userName") String userName) {
+		List<Blog> blogs = blogsService.readByUserId(userName);
+
+		if (blogs.size() > 0) {
+			return Response.ok().entity(blogs).build();
+		}
+		return Response.status(Response.Status.NO_CONTENT).build();
+	}
 
 }

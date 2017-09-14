@@ -60,20 +60,6 @@ public class BlogsService implements Blogs {
 	}
 
 	
-	public List<Blog> readByCategory(String category) throws DataNotFoundException, BlogException {
-		List<Blog> blogs = new ArrayList<Blog>();
-        try {
-            blogs = dao.readByCategory(category);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BlogException();
-        }
-
-        if (blogs == null || blogs.isEmpty())
-            throw new DataNotFoundException();
-        return blogs;
-	}
-
 	
 	public List<Blog> readAllBlogs(int offset, int count, String category) throws DataNotFoundException, BlogException {
 		 List<Blog> blogs = new ArrayList<Blog>();
@@ -119,4 +105,20 @@ public class BlogsService implements Blogs {
 	            throw new DataNotFoundException();
 	        return blogs;
 	}
+	
+
+	public List<Blog> readByCategory(String category) throws DataNotFoundException, BlogException {
+		List<Blog> blogs = new ArrayList<Blog>();
+        try {
+            blogs = dao.readByCategory(category);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BlogException();
+        }
+
+        if (blogs == null || blogs.isEmpty())
+            throw new DataNotFoundException();
+        return blogs;
+	}
+
 }
