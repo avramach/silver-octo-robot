@@ -49,13 +49,14 @@ public class BlogsDAOImpl extends BasicDAO<Blog, Long> implements BlogsDAO {
 	}
 
 	public List<Blog> readByCategory(String category) {
-		if (category.isEmpty()) {
-			List<Blog> blogs = createQuery().asList();
+		List<Blog> blogs = null;
+		if (category==null) {
+			blogs = createQuery().asList();
 			return blogs;
 		}
 		else {
 			Pattern regexp = Pattern.compile(category, Pattern.CASE_INSENSITIVE);
-			List<Blog> blogs = createQuery().filter("category", regexp).asList();
+			blogs = createQuery().filter("category",regexp).order("-createDate").asList();
 			return blogs;
 		}
 	}
