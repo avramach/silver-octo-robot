@@ -14,11 +14,12 @@ import com.mongodb.MongoClient;
 import cisco.reactx.blogs.api.Blog;
 import cisco.reactx.blogs.api.BlogException;
 import cisco.reactx.blogs.api.DataNotFoundException;
+import cisco.reactx.blogs.util.Constants;
 import cisco.reactx.blogs.util.SearchResults;
 
 public class BlogsDAOImpl extends BasicDAO<Blog, Long> implements BlogsDAO {
 
-	public static MongoClient mongoClient = new MongoClient("localhost:27017");
+	public static MongoClient mongoClient = new MongoClient(Constants.MONGO_IP);
 	public static Morphia morphia = new Morphia();
 	public static Datastore datastore = morphia.createDatastore(mongoClient, "cmad_blog");
 	private static final AtomicInteger index = new AtomicInteger(0);

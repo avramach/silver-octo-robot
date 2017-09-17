@@ -9,11 +9,12 @@ import org.mongodb.morphia.dao.BasicDAO;
 import com.mongodb.MongoClient;
 
 import cisco.reactx.blogs.api.User;
+import cisco.reactx.blogs.util.Constants;
 
 
 public class UsersDAOImpl extends BasicDAO<User, String> implements UsersDAO {
 
-	public static MongoClient mongoClient = new MongoClient("localhost:27017");
+	public static MongoClient mongoClient = new MongoClient(Constants.MONGO_IP);
 	public static Morphia morphia = new Morphia();
 	public static Datastore datastore = morphia.createDatastore(mongoClient, "cmad_blog");
 

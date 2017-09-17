@@ -11,12 +11,11 @@ import com.mongodb.MongoClient;
 
 
 import cisco.reactx.blogs.api.Comment;
+import cisco.reactx.blogs.util.Constants;
 
 public class CommentsDAOImpl extends BasicDAO<Comment, Long> implements CommentsDAO {
 
-	//public static MongoClient mongoClient = new MongoClient("ec2-34-209-76-193.us-west-2.compute.amazonaws.com:27017");
-	//public static MongoClient mongoClient = new MongoClient("172.31.39.116:27017");
-	public static MongoClient mongoClient = new MongoClient("localhost:27017");
+	public static MongoClient mongoClient = new MongoClient(Constants.MONGO_IP);
 	public static Morphia morphia = new Morphia();
 	public static Datastore datastore = morphia.createDatastore(mongoClient, "cmad_blog");
 	private static final AtomicInteger index = new AtomicInteger(0);
