@@ -110,4 +110,32 @@ public class Blog {
 	public void setBlogMessage(String blogMessage) {
 		this.blogMessage = blogMessage;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (blogId ^ (blogId >>> 32));
+		result = prime * result + ((createDate == null) ? 0 : createDate.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Blog other = (Blog) obj;
+		if (blogId != other.blogId)
+			return false;
+		if (createDate == null) {
+			if (other.createDate != null)
+				return false;
+		} else if (!createDate.equals(other.createDate))
+			return false;
+		return true;
+	}
 }

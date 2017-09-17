@@ -13,7 +13,6 @@ import cisco.reactx.blogs.api.User;
 
 public class UsersDAOImpl extends BasicDAO<User, String> implements UsersDAO {
 
-	//public static MongoClient mongoClient = new MongoClient("ec2-34-209-76-193.us-west-2.compute.amazonaws.com:27017");
 	public static MongoClient mongoClient = new MongoClient("localhost:27017");
 	public static Morphia morphia = new Morphia();
 	public static Datastore datastore = morphia.createDatastore(mongoClient, "cmad_blog");
@@ -26,7 +25,11 @@ public class UsersDAOImpl extends BasicDAO<User, String> implements UsersDAO {
 		super(entityClass, ds);
 	}
 
-
+	public User read(String userName) {
+        User user = findOne("_id", userName);
+        return user;
+	}
+	
 	public void create(User user) {
 		try {
 	        save(user);
@@ -35,25 +38,6 @@ public class UsersDAOImpl extends BasicDAO<User, String> implements UsersDAO {
 		}
 	}
 
-
-	public User read(String userName) {
-        User user = findOne("_id", userName);
-        return user;
-	}
-
-	
-	public User readByUserIdAndPassword(String userName, String password) {
-		User user = createQuery().field("_id").contains(userName).field("password").contains(password).get();
-		return user;
-	}
-
-	
-	public List<User> readAllUsers() {
-        List<User> users = createQuery().asList();
-        return users;
-	}
-
-	
 	public void update(User updatedUser) {
         User temp = read(updatedUser.getUserName());
 		temp.setFirstName(updatedUser.getFirstName());
@@ -69,4 +53,18 @@ public class UsersDAOImpl extends BasicDAO<User, String> implements UsersDAO {
         User user = read(userName);
         delete(user);
 	}
+
+	
+	public User readByUserIdAndPassword(String userName, String password) {
+		User user = createQuery().field("_id").contains(userName).field("password").contains(password).get();
+		return user;
+	}
+
+	
+	public List<User> readAllUsers() {
+        List<User> users = createQuery().asList();
+        return users;
+	}
+
+	
 }

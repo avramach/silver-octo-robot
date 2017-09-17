@@ -33,6 +33,13 @@ public class CommentsDAOImpl extends BasicDAO<Comment, Long> implements Comments
 		super(entityClass, ds);
 	}
 
+
+	
+	public Comment read(long commentId) {
+        Comment comment = findOne("_id", commentId);
+        return comment;
+	}
+
 	public void create(Comment comment) {
 		try {
 			comment.setCommentId(index.incrementAndGet());
@@ -41,19 +48,6 @@ public class CommentsDAOImpl extends BasicDAO<Comment, Long> implements Comments
 			e.printStackTrace();
 		}
 	}
-
-	
-	public Comment read(long commentId) {
-        Comment comment = findOne("_id", commentId);
-        return comment;
-	}
-
-
-	public List<Comment> readAllByBlogId(long blogId) {
-        List<Comment> comments = createQuery().filter("blogId", blogId).order("-createDate").asList();
-        return comments;
-	}
-
 
 	public void update(Comment updatedComment) {
         Comment temp = read(updatedComment.getCommentId());
@@ -68,6 +62,11 @@ public class CommentsDAOImpl extends BasicDAO<Comment, Long> implements Comments
         delete(comment);
 	}
 
+
+	public List<Comment> readAllByBlogId(int offset ,int count ,long blogId) {
+        List<Comment> comments = createQuery().filter("blogId", blogId).order("-createDate").asList();
+        return comments;
+	}
 
 	public long readCountByBlogId(long blogId) {
 		List<Comment> comments = createQuery().filter("blogId", blogId).asList();

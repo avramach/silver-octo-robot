@@ -2,6 +2,7 @@ package cisco.reactx.blogs.rest;
 
 import java.util.List;
 
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -20,18 +21,18 @@ import cisco.reactx.blogs.api.DataNotFoundException;
 import cisco.reactx.blogs.api.DuplicateDataException;
 import cisco.reactx.blogs.api.InvalidDataException;
 import cisco.reactx.blogs.service.CommentsService;
+import cisco.reactx.blogs.util.QueryFilterBean;
 
 @Path("/blogs/{blogid}/comments")
 public class CommentsController {
 
 	private static Comments commentService = CommentsService.getInstance();
 
-	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getAll(@PathParam("blogid") int blogid) {
+	public Response getAll(@BeanParam QueryFilterBean filter ,@PathParam("blogid") int blogid) {
 		try {
-			List<Comment> comments = commentService.readAllByBlogId(blogid);
+			List<Comment> comments = commentService.readAllByBlogId(filter.getOffset(), filter.getCount(), blogid);
 			return Response.ok().entity(comments).build();
 		} catch (DataNotFoundException dnfe) {
 			return Response.status(Response.Status.NO_CONTENT).build();

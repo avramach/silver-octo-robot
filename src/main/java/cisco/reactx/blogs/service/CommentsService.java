@@ -27,14 +27,7 @@ public class CommentsService implements Comments{
         return commentsService;
     }
 	
-	
-	public void create(Comment comment) throws InvalidDataException, DuplicateDataException, BlogException {
-		if (comment == null)
-            throw new InvalidDataException();
-        dao.create(comment);
-	}
 
-	
 	public Comment read(long commentId) throws DataNotFoundException, BlogException {
 		Comment comment = dao.read(commentId);
         if (comment == null)
@@ -42,15 +35,12 @@ public class CommentsService implements Comments{
         return comment;
 	}
 
-	
-	public List<Comment> readAllByBlogId(long blogId) throws DataNotFoundException, BlogException {
-		List<Comment> comments = dao.readAllByBlogId(blogId);
-        if (comments == null)
-            throw new DataNotFoundException();
-        return comments;
+	public void create(Comment comment) throws InvalidDataException, DuplicateDataException, BlogException {
+		if (comment == null)
+            throw new InvalidDataException();
+        dao.create(comment);
 	}
 
-	
 	public Comment update(Comment updatedComment) throws DataNotFoundException, BlogException {
 		if (updatedComment == null)
             throw new BlogException();
@@ -73,23 +63,18 @@ public class CommentsService implements Comments{
             throw new BlogException();
         }
 	}
-
 	
+
+	public List<Comment> readAllByBlogId(int offset ,int count ,long blogId) throws DataNotFoundException, BlogException {
+		List<Comment> comments = dao.readAllByBlogId(offset, count ,blogId);
+        if (comments == null)
+            throw new DataNotFoundException();
+        return comments;
+	}
+
 	public long readCountByBlogId(long blogId) throws DataNotFoundException, BlogException {
 		long count = dao.readCountByBlogId(blogId);
         return count;
-	}
-
-	
-	public long getUpVote(long commentId) throws DataNotFoundException, BlogException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	
-	public long getDownVote(long commentId) throws DataNotFoundException, BlogException {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 }

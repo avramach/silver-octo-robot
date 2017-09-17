@@ -31,8 +31,8 @@ import cisco.reactx.blogs.api.User;
 import cisco.reactx.blogs.api.Users;
 import cisco.reactx.blogs.service.UsersService;
 import cisco.reactx.blogs.util.Constants;
-import cisco.reactx.jwt.utils.KeyGenerator;
-import cisco.reactx.jwt.utils.SecretKeyGenerator;
+import cisco.reactx.blogs.util.KeyGenerator;
+import cisco.reactx.blogs.util.SecretKeyGenerator;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -46,40 +46,6 @@ public class UsersController {
 	@Context
 	private UriInfo uriInfo;
 
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response create(User user) {
-		try {
-			userService.create(user);
-			return Response.status(Response.Status.CREATED).build();
-		} catch (InvalidDataException ide) {
-			return Response.status(Response.Status.BAD_REQUEST).build();
-		} catch (DuplicateDataException dde) {
-			return Response.status(Response.Status.CONFLICT).build();
-		} catch (BlogException be) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-		}
-	}
-
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@JwtTokenExpected
-	public Response getAll() {
-		try {
-			List<User> matched;
-			GenericEntity<List<User>> entities;
-			matched = userService.readAllUsers();
-			entities = new GenericEntity<List<User>>(matched) {
-			};
-			return Response.ok().entity(entities).build();
-		} catch (DataNotFoundException dnfe) {
-			return Response.status(Response.Status.NO_CONTENT).build();
-		} catch (BlogException be) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-		}
-	}
-
-
 	@GET
 	@Path("/{username}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -90,6 +56,21 @@ public class UsersController {
 			return Response.ok().entity(data).build();
 		} catch (DataNotFoundException dnfe) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
+		} catch (BlogException be) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response create(User user) {
+		try {
+			userService.create(user);
+			return Response.status(Response.Status.CREATED).build();
+		} catch (InvalidDataException ide) {
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		} catch (DuplicateDataException dde) {
+			return Response.status(Response.Status.CONFLICT).build();
 		} catch (BlogException be) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
@@ -124,7 +105,25 @@ public class UsersController {
 		}
 	}
 
-		
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@JwtTokenExpected
+	public Response getAll() {
+		try {
+			List<User> matched;
+			GenericEntity<List<User>> entities;
+			matched = userService.readAllUsers();
+			entities = new GenericEntity<List<User>>(matched) {
+			};
+			return Response.ok().entity(entities).build();
+		} catch (DataNotFoundException dnfe) {
+			return Response.status(Response.Status.NO_CONTENT).build();
+		} catch (BlogException be) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
 	@POST
 	@Path("/authenticateUser") // used for authenticating user
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -132,18 +131,15 @@ public class UsersController {
 	public Response authenticateUser(User user) {
 		try {
 			logger.info("#### login/password : " + user.getUserName() + "/" + user.getPassword());
-			// Authenticate the user using the credentials provided
 			userService.authenticate(user.getUserName(), user.getPassword());
-
 			// Issue a token for the user
 			String token = issueToken(user.getUserName());
 
-			// Return the token on the response
 			//return Response.ok().header(AUTHORIZATION, "Bearer " + token).build();
+			//return Response.ok().entity("Bearer " +token).build();
 			//return Response.ok().entity("{\"token\":\"Bearer " +token+"\"}").build();
 			return Response.ok().entity("{\"userName\": \""+  user.getUserName()+ "\",\"token\":\"Bearer " +token+"\"}").build();
-			//return Response.ok().entity("Bearer " +token).build();
-		
+					
 		} catch (Exception e) {
 			return Response.status(UNAUTHORIZED).build();
 		}

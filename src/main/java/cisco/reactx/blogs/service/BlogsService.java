@@ -11,6 +11,7 @@ import cisco.reactx.blogs.api.DuplicateDataException;
 import cisco.reactx.blogs.api.InvalidDataException;
 import cisco.reactx.blogs.data.BlogsDAO;
 import cisco.reactx.blogs.data.BlogsDAOImpl;
+import cisco.reactx.blogs.util.SearchResults;
 
 public class BlogsService implements Blogs {
 
@@ -27,6 +28,19 @@ public class BlogsService implements Blogs {
 		return blogsService;
 	}
 
+	public Blog read(long blogId) throws DataNotFoundException, BlogException {
+		Blog blog = null;
+		try {
+	            blog = dao.read(blogId);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            throw new BlogException();
+	        }
+	        if (blog == null)
+	            throw new DataNotFoundException();
+
+	        return blog;
+	}
 	
 	public void create(Blog blog) throws InvalidDataException, DuplicateDataException, BlogException {
 		if (blog == null)
@@ -75,27 +89,10 @@ public class BlogsService implements Blogs {
 	        return blogs;
 	}
 
-	
-	public Blog read(long blogId) throws DataNotFoundException, BlogException {
-		Blog blog = null;
-		try {
-	            blog = dao.read(blogId);
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            throw new BlogException();
-	        }
-
-	        if (blog == null)
-	            throw new DataNotFoundException();
-
-	        return blog;
-	}
-
-	
-	public List<Blog> readByUserId(String userId) throws DataNotFoundException, BlogException {
+	public List<Blog> readByUserId(int offset, int count, String userName) throws DataNotFoundException, BlogException {
 		 List<Blog> blogs = new ArrayList<Blog>();
 	        try {
-	            blogs = dao.readByUserId(userId);
+	            blogs = dao.readByUserId(offset, count, userName);
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	            throw new BlogException();
@@ -107,18 +104,45 @@ public class BlogsService implements Blogs {
 	}
 	
 
-	public List<Blog> readByCategory(String category) throws DataNotFoundException, BlogException {
+	public List<Blog> readByCategory(int offset, int count,String category) throws DataNotFoundException, BlogException {
 		List<Blog> blogs = new ArrayList<Blog>();
-        try {
-            blogs = dao.readByCategory(category);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BlogException();
-        }
+       try {
+           blogs = dao.readByCategory(offset, count, category);
+       } catch (Exception e) {
+           e.printStackTrace();
+           throw new BlogException();
+       }
 
-        if (blogs == null || blogs.isEmpty())
-            throw new DataNotFoundException();
-        return blogs;
+       if (blogs == null || blogs.isEmpty())
+           throw new DataNotFoundException();
+       return blogs;
+	}
+	
+	public SearchResults searchAllBlogs(int offset, int count, String searchString) throws DataNotFoundException, BlogException {
+		 SearchResults results = new SearchResults();
+	        try {
+	            results  = dao.searchBlogs(offset, count, searchString);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            throw new BlogException();
+	        }
+
+	        if (results == null || (results.getTotalMatches() == 0))
+	            throw new DataNotFoundException();
+	        return results;
 	}
 
+	public List<Blog> readSortedByLikes(int offset, int count) throws DataNotFoundException, BlogException {
+		List<Blog> blogs = new ArrayList<Blog>();
+	       try {
+	           blogs = dao.readSortedByLikes(offset, count);
+	       } catch (Exception e) {
+	           e.printStackTrace();
+	           throw new BlogException();
+	       }
+
+	       if (blogs == null || blogs.isEmpty())
+	           throw new DataNotFoundException();
+	       return blogs;
+	}
 }

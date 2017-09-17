@@ -14,8 +14,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
 import cisco.reactx.blogs.util.Constants;
-import cisco.reactx.jwt.utils.KeyGenerator;
-import cisco.reactx.jwt.utils.SecretKeyGenerator;
+import cisco.reactx.blogs.util.KeyGenerator;
+import cisco.reactx.blogs.util.SecretKeyGenerator;
 import io.jsonwebtoken.Jwts;
 
 @Provider
